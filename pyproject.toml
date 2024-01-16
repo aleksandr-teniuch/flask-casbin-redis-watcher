@@ -1,0 +1,49 @@
+[tool.isort]
+known_first_party = []
+known_third_party = ["redis"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+[tool.poetry]
+name = "casbin-redis-watcher"
+version = "1.0.1"
+description = "This is pycasbin watcher module"
+authors = ["Aleksandr Teniuch"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+redis = "^3.5.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+tox = "^3.27.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,32 @@
+image: python:3.11
+definitions:
+  steps:
+    - step: &run-tests
+        name: 'Run tests'
+        caches:
+          - pip
+        script:
+          - pip install poetry==1.1.15
+          - poetry install
+          - poetry run tox -e PIPELINES
+
+    - step: &upload
+        name: 'Build and upload to Nexus'
+        caches:
+            - pip
+        script:
+            - pip install poetry==1.1.15
+            - poetry install
+            - ssh -fN bitbucket@{DEV_PROXY_HOST} -L 8081:${NEXUS_HOST}
+            - poetry config repositories.mypypi http://localhost:8081/repository/pypi-private/
+            - poetry build
+            - poetry publish --username ${NEXUS_USER} --password ${NEXUS_PASSWORD} -r mypypi
+
+pipelines:
+  pull-requests:
+    '**':
+      - step: *run-tests
+  tags:
+    '*':
+      - step: *run-tests
+      - step: *upload
